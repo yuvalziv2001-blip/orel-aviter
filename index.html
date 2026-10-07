@@ -361,7 +361,7 @@ function renderJoin(){
         '<div class="contact'+(F.usePhone?" on":"")+'"><div class="head"><span>וואטסאפ</span><button type="button" class="switch" role="switch" aria-label="וואטסאפ" aria-checked="'+F.usePhone+'" data-act="usePhone"></button></div>'+
           (F.usePhone?'<div class="body"><input id="f_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 000 0000" dir="ltr" value="'+esc(F.phone)+'"><div class="err" id="e_phone"></div></div>':'')+'</div>'+
         '<div class="contact'+(F.useIg?" on":"")+'"><div class="head"><span>אינסטגרם</span><button type="button" class="switch" role="switch" aria-label="אינסטגרם" aria-checked="'+F.useIg+'" data-act="useIg"></button></div>'+
-          (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="שם משתמש או קישור לפרופיל" dir="ltr" value="'+esc(F.instagram)+'"><small>גם חשבון פרטי עובד: מי שתתאימו איתו יוכל לשלוח לך בקשת מעקב או הודעה.</small><div class="err" id="e_ig"></div></div>':'')+'</div>'+
+          (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="@username" dir="ltr" value="'+esc(F.instagram)+'"><small>שם המשתמש באנגלית, זה שמופיע עם @ בראש הפרופיל שלך. לא השם המלא. אפשר גם להדביק קישור לפרופיל.</small><button type="button" class="link" data-act="igcheck" style="font-size:14px;padding:4px 0">לבדוק שזה הפרופיל שלי</button><small>גם חשבון פרטי עובד: מי שתתאימו איתו יוכל לשלוח לך בקשת מעקב או הודעה.</small><div class="err" id="e_ig"></div></div>':'')+'</div>'+
         '<div class="err" id="e_contact"></div></div>'+
       '<label class="consent"><input type="checkbox" id="f_consent"'+(F.consent?" checked":"")+'><span>אני מעל גיל 18, ומסכים/ה שהתמונה והפרטים יוצגו לרווקים ולרווקות שנרשמו לאתר. פרטי הקשר נחשפים רק בהתאמה הדדית, והכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'.</span></label>'+
       '<div class="err" id="e_consent"></div>';
@@ -674,6 +674,7 @@ document.addEventListener("click",function(e){
     case "usePhone": F.usePhone=!F.usePhone; renderJoin(); if(F.usePhone) setTimeout(function(){var i=$("#f_phone");i&&i.focus()},30); break;
     case "useIg": F.useIg=!F.useIg; renderJoin(); if(F.useIg) setTimeout(function(){var i=$("#f_ig");i&&i.focus()},30); break;
     case "copy": copyLink(); break;
+    case "igcheck": var u=normIg(F.instagram); if(!u){setErr("e_ig","קודם כותבים את שם המשתמש");break} window.open("https://www.instagram.com/"+encodeURIComponent(u)+"/","_blank","noopener"); break;
     case "closesheet": closeSheet(); break;
     case "closematch": closeMatch(); break;
     case "tomatches": closeMatch(); state.tab="matches"; history.replaceState(null,"","#/m");
