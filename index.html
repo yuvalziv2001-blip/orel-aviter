@@ -515,7 +515,7 @@ function drawPane(){
       var msg=encodeURIComponent("היי "+first(m.full_name)+", הכרנו דרך האתר בחתונה של "+EVENT.couple);
       return '<div class="mrow">'+pimg(m.id)+'<div class="info"><b>'+esc(m.full_name)+'</b><span>'+m.age+', '+esc(m.city)+'</span></div><div class="cta">'+
         (m.phone?'<a class="pill" target="_blank" rel="noopener" href="https://wa.me/'+esc(m.phone)+'?text='+msg+'">'+ICON.wa+'וואטסאפ</a>':'')+
-        (m.instagram?'<a class="pill ig" target="_blank" rel="noopener" href="https://instagram.com/'+encodeURIComponent(m.instagram)+'">'+ICON.ig+'אינסטגרם</a>':'')+
+        (m.instagram?'<a class="pill ig" target="_blank" rel="noopener" href="https://www.instagram.com/'+encodeURIComponent(m.instagram)+'/">'+ICON.ig+'אינסטגרם</a>':'')+
         '</div></div>';
     }).join("")+'</div>';
   }
