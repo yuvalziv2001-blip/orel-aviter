@@ -460,9 +460,8 @@ function renderJoin(){
       '<div class="field"><label for="f_city">עיר מגורים</label><input id="f_city" type="text" maxlength="40" autocomplete="address-level2" value="'+esc(F.city)+'"><div class="err" id="e_city"></div></div>'+
       '<div class="field"><span class="lbl">רמת דתיות</span>'+chips("religiosity",RELIG.map(function(r){return[r,r]}),F.religiosity)+'<div class="err" id="e_rel"></div></div>';
   }else{
-    h+='<h2>רגע לפני</h2><p class="sub">שתי שורות שלך, ואיך יוכלו לפנות אליך אם יש התאמה.</p>'+
+    h+='<h2>רגע לפני</h2><p class="sub">משפט אחד עליך, ואיך יוכלו לפנות אליך אם יש התאמה.</p>'+
       '<div class="field"><label for="f_about">משפט עליי <span class="count" id="c_about">'+F.about.length+'/160</span></label><textarea id="f_about" maxlength="160" placeholder="מה הכי חשוב לדעת עליך?">'+esc(F.about)+'</textarea></div>'+
-      '<div class="field"><label for="f_funny">'+esc(EVENT.funnyQ)+' <span class="count" id="c_funny">'+F.funny.length+'/200</span></label><textarea id="f_funny" maxlength="200">'+esc(F.funny)+'</textarea></div>'+
       '<div class="field"><span class="lbl">איך יפנו אליך כשיש התאמה <span class="opt">(רק מי שגם סימנת לו לב יראה)</span></span>'+
         '<div class="contact'+(F.usePhone?" on":"")+'"><div class="head"><span>וואטסאפ</span><button type="button" class="switch" role="switch" aria-label="וואטסאפ" aria-checked="'+F.usePhone+'" data-act="usePhone"></button></div>'+
           (F.usePhone?'<div class="body"><input id="f_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 000 0000" dir="ltr" value="'+esc(F.phone)+'"><div class="err" id="e_phone"></div></div>':'')+'</div>'+
@@ -793,7 +792,6 @@ function profileSheet(id){
     '<div class="in"><h3>'+esc(p.full_name)+' <span>'+p.age+'</span></h3>'+
     '<div class="facts">'+facts.map(function(f){return '<span>'+f+'</span>'}).join("")+'</div>'+
     (p.about?'<dl class="qa"><dt>משפט עליי</dt><dd>'+esc(p.about)+'</dd></dl>':'')+
-    (p.funny?'<dl class="qa"><dt>'+esc(EVENT.funnyQ)+'</dt><dd>'+esc(p.funny)+'</dd></dl>':'')+
     '<button class="btn gold'+(p.liked?" liked":"")+'" data-like="'+p.id+'">'+(p.liked?ICON.heartFull+"סימנת לב":"לסמן לב")+'</button>'+
     '<button class="link report" data-report="'+p.id+'">לדווח על הפרופיל</button></div>');
   var im=s.querySelector("img"); im.src=state.photos[p.id]||"";
