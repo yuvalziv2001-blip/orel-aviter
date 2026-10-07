@@ -466,13 +466,13 @@ function renderJoin(){
         '<div class="contact'+(F.useIg?" on":"")+'"><div class="head"><span>אינסטגרם</span><button type="button" class="switch" role="switch" aria-label="אינסטגרם" aria-checked="'+F.useIg+'" data-act="useIg"></button></div>'+
           (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="@username" dir="ltr" value="'+esc(F.instagram)+'">'+
             '<small id="ig_ok" dir="ltr" style="color:var(--ok);font-weight:700;text-align:right">'+(normIg(F.instagram)?"✓ @"+esc(normIg(F.instagram)):"")+'</small>'+
-            '<div class="ighelp"><b>הכי קל להדביק קישור:</b><ol><li>באינסטגרם, נכנסים לפרופיל שלך</li><li>לוחצים על <b>שיתוף הפרופיל</b> ואז <b dir="ltr">Copy link</b></li><li>חוזרים לכאן ומדביקים בתיבה</li></ol><p>חשבון פרטי? גם זה בסדר.</p></div>'+
+            '<div class="ighelp"><b>הכי קל להדביק קישור:</b><ol><li>באינסטגרם, נכנסים לפרופיל שלך</li><li>לוחצים על <b>שיתוף הפרופיל</b> ואז <b dir="ltr">Copy link</b></li><li>חוזרים לכאן, לוחצים <b>פעמיים</b> על התיבה ובוחרים <b>הדבקה</b></li></ol><p>חשבון פרטי? גם זה בסדר.</p></div>'+
             '<div class="err" id="e_ig"></div></div>':'')+'</div>'+
         '<div class="err" id="e_contact"></div></div>'+
       (F.edit?'':'<label class="consent"><input type="checkbox" id="f_consent"'+(F.consent?" checked":"")+'><span>אני מעל גיל 18, ומסכים/ה שהתמונה והפרטים יוצגו לרווקים ולרווקות שנרשמו לאתר. פרטי הקשר נחשפים רק בהתאמה הדדית, והכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'.</span></label>')+
       '<div class="err" id="e_consent"></div>';
   }
-  h+='<div class="actions"><button class="btn '+(s===3?"gold":"")+'" type="submit" id="next">'+(s===3?(F.edit?"לשמור שינויים":"להצטרף לגלריה"):"המשך")+'</button></div></form>';
+  h+='<div class="actions"><button class="btn '+(s===3?"gold":"")+'" type="submit" id="next">'+(s===3?(F.edit?"לשמור שינויים":"למצוא את שאהבה נפשי ♥"):"המשך")+'</button></div></form>';
   app.innerHTML=h;
   var fm=$("#jf");
   fm.addEventListener("input",function(e){
@@ -541,7 +541,7 @@ function nextStep(){
   }
   api("register",payload).then(function(token){
     state.token=token;store.set("mw_token",token);F=null;renderDone();
-  }).catch(function(e){b.disabled=false;b.textContent="להצטרף לגלריה";handleErr(e)});
+  }).catch(function(e){b.disabled=false;b.textContent="למצוא את שאהבה נפשי ♥";handleErr(e)});
 }
 function startEdit(){
   app.innerHTML='<div class="empty">רגע...</div>';
@@ -562,7 +562,7 @@ function renderDone(){
     '<div class="tokenbox"'+(kept?'':' style="border-color:var(--heart)"')+'>'+(kept
       ?'<b>הטלפון הזה זוכר אותך</b><p>רוצה להיכנס גם ממכשיר אחר? שלח לעצמך את הכניסה האישית בוואטסאפ.</p>'
       :'<b>חשוב: הטלפון לא שומר את הכניסה</b><p>כנראה גלישה פרטית. שלח לעצמך עכשיו את הכניסה האישית בוואטסאפ, אחרת אחרי רענון תצטרך להירשם מחדש.</p>')+
-    '<div class="actions" style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לגלריה בחתונה של "+EVENT.couple+": "+link)+'">'+ICON.wa+'לשלוח לעצמי</a></div></div></section>';
+    '<div class="actions" style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לאתר הרווקים בחתונה של "+EVENT.couple+": "+link)+'">'+ICON.wa+'לשלוח לעצמי</a></div></div></section>';
 }
 
 /* ---------- selfie: crop to 4:5 and compress ---------- */
@@ -934,7 +934,7 @@ document.addEventListener("click",function(e){
       break;
     case "mylink":
       openSheet('<div class="in center"><h3 style="font-size:26px">כניסה ממכשיר אחר</h3><p class="sub" style="margin-top:8px">הטלפון הזה כבר זוכר אותך. כדי להיכנס גם ממכשיר אחר, שלח לעצמך את הכניסה האישית. לא לשתף עם אחרים.</p>'+
-        '<div class="actions"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לגלריה בחתונה של "+EVENT.couple+": "+personalLink())+'">'+ICON.wa+'לשלוח לעצמי בוואטסאפ</a>'+
+        '<div class="actions"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לאתר הרווקים בחתונה של "+EVENT.couple+": "+personalLink())+'">'+ICON.wa+'לשלוח לעצמי בוואטסאפ</a>'+
         '<button class="btn ghost" data-act="copy">להעתיק את הקישור</button><button class="link" data-act="closesheet">סגירה</button></div></div>');
       break;
     case "deleteme":
