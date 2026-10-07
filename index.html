@@ -362,9 +362,9 @@ function renderJoin(){
         '<div class="contact'+(F.usePhone?" on":"")+'"><div class="head"><span>וואטסאפ</span><button type="button" class="switch" role="switch" aria-label="וואטסאפ" aria-checked="'+F.usePhone+'" data-act="usePhone"></button></div>'+
           (F.usePhone?'<div class="body"><input id="f_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 000 0000" dir="ltr" value="'+esc(F.phone)+'"><div class="err" id="e_phone"></div></div>':'')+'</div>'+
         '<div class="contact'+(F.useIg?" on":"")+'"><div class="head"><span>אינסטגרם</span><button type="button" class="switch" role="switch" aria-label="אינסטגרם" aria-checked="'+F.useIg+'" data-act="useIg"></button></div>'+
-          (F.useIg?'<div class="body"><div style="display:flex;gap:8px"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="@username" dir="ltr" value="'+esc(F.instagram)+'"><button type="button" class="sbtn" data-act="igpaste" style="flex:none;min-height:50px;padding:0 14px">להדביק</button></div>'+
+          (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="@username" dir="ltr" value="'+esc(F.instagram)+'">'+
             '<small id="ig_ok" dir="ltr" style="color:var(--ok);font-weight:700;text-align:right">'+(normIg(F.instagram)?"✓ @"+esc(normIg(F.instagram)):"")+'</small>'+
-            '<small>הכי קל: באינסטגרם נכנסים לפרופיל שלך, לוחצים <b>Share profile</b> ואז <b>Copy link</b>, וחוזרים לכאן ל"להדביק". אפשר גם להקליד את שם המשתמש שמופיע עם @, לא את השם המלא.</small>'+
+            '<small>הכי קל: באינסטגרם, בפרופיל שלך, לוחצים על שיתוף הפרופיל ואז <b>Copy link</b>. חוזרים לכאן, לחיצה ארוכה בתיבה ו<b>הדבקה</b>. אפשר גם להקליד את שם המשתמש שמופיע עם @, לא את השם המלא.</small>'+
             '<small>גם חשבון פרטי עובד: מי שתתאימו איתו יוכל לשלוח לך בקשת מעקב.</small><div class="err" id="e_ig"></div></div>':'')+'</div>'+
         '<div class="err" id="e_contact"></div></div>'+
       (F.edit?'':'<label class="consent"><input type="checkbox" id="f_consent"'+(F.consent?" checked":"")+'><span>אני מעל גיל 18, ומסכים/ה שהתמונה והפרטים יוצגו לרווקים ולרווקות שנרשמו לאתר. פרטי הקשר נחשפים רק בהתאמה הדדית, והכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'.</span></label>')+
@@ -692,12 +692,6 @@ document.addEventListener("click",function(e){
   }
   switch(a){
     case "back": if(F&&F.step>1){F.step--;renderJoin();window.scrollTo(0,0)} else {var wasEdit=F&&F.edit;F=null;go(wasEdit?"g":"")} break;
-    case "igpaste":
-      if(!navigator.clipboard||!navigator.clipboard.readText){toast("לוחצים לחיצה ארוכה בתיבה ובוחרים הדבקה");break}
-      navigator.clipboard.readText().then(function(t){var i=$("#f_ig");F.instagram=t;if(i)i.value=t;var u=normIg(t),ok=$("#ig_ok");
-        if(ok)ok.textContent=u?"✓ @"+u:"";setErr("e_ig",u?"":"זה לא נראה כמו קישור לפרופיל אינסטגרם")},
-        function(){toast("לוחצים לחיצה ארוכה בתיבה ובוחרים הדבקה")});
-      break;
     case "pick": $("#file").click(); break;
     case "usePhone": F.usePhone=!F.usePhone; renderJoin(); if(F.usePhone) setTimeout(function(){var i=$("#f_phone");i&&i.focus()},30); break;
     case "useIg": F.useIg=!F.useIg; renderJoin(); if(F.useIg) setTimeout(function(){var i=$("#f_ig");i&&i.focus()},30); break;
