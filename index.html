@@ -43,7 +43,34 @@ img{display:block;max-width:100%}
 .link{background:none;border:0;padding:8px 4px;color:var(--gold-deep);font-weight:600;text-decoration:underline;text-underline-offset:4px;min-height:40px}
 
 /* intro */
-.intro{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:40px 0 30px}
+.intro{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:40px 0 30px;position:relative}
+.intro.has-photo{justify-content:flex-start;padding-top:0}
+.couple{position:relative;margin:0 -20px 0;height:min(58vh,520px);height:min(58svh,520px);overflow:hidden}
+.couple img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;transform:scale(1.06);animation:kb 14s ease-out forwards}
+.couple::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 46%,rgba(255,255,255,.18) 60%,rgba(255,255,255,.55) 74%,rgba(255,255,255,.86) 87%,#fff 100%)}
+@keyframes kb{to{transform:scale(1)}}
+.has-photo .names{margin-top:-64px;position:relative;z-index:1}
+.has-photo .rings{display:none}
+.floaters{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.floaters i{position:absolute;bottom:-40px;width:var(--s);height:var(--s);opacity:0;animation:rise var(--d) linear var(--w) infinite}
+.floaters i svg{width:100%;height:100%}
+@keyframes rise{0%{transform:translateY(0) rotate(0);opacity:0}12%{opacity:var(--o)}80%{opacity:var(--o)}100%{transform:translateY(-110vh) rotate(var(--r));opacity:0}}
+.intro>*:not(.floaters){position:relative;z-index:1}
+.live{display:inline-flex;align-items:center;gap:8px;margin:0 auto 22px;padding:7px 16px;border-radius:99px;background:#FCEEEF;color:#8E1F28;font-weight:700;font-size:15px}
+.live .dot{width:8px;height:8px;border-radius:50%;background:var(--heart);box-shadow:0 0 0 0 rgba(200,50,60,.5);animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(200,50,60,0)}100%{box-shadow:0 0 0 0 rgba(200,50,60,0)}}
+.strip{direction:ltr;overflow:hidden;margin:0 -20px 28px;border-block:1px solid var(--line);background:var(--ivory)}
+.strip div{display:flex;width:max-content;animation:marq 26s linear infinite}
+.strip span{direction:rtl;white-space:nowrap;padding:11px 0;font:500 17px var(--serif);color:var(--gold-deep);display:inline-flex;align-items:center;gap:14px;padding-inline-end:14px}
+.strip svg{width:14px;height:14px}
+@keyframes marq{to{transform:translateX(-50%)}}
+.card.enter{animation:cardin .55s var(--ease) both}
+@keyframes cardin{from{opacity:0;transform:translateY(14px) scale(.98)}}
+.pop{animation:pop .45s var(--ease)}
+@keyframes pop{40%{transform:scale(1.35)}}
+.burst{position:fixed;pointer-events:none;z-index:50;width:18px;height:18px;margin:-9px 0 0 -9px;animation:fly .9s var(--ease) forwards}
+.burst svg{width:100%;height:100%}
+@keyframes fly{to{transform:translate(var(--x),var(--y)) scale(.4) rotate(var(--r));opacity:0}}
 .rings{width:132px;margin:0 auto 26px;overflow:visible}
 .rings circle{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1.6s var(--ease) forwards}
 .rings circle+circle{animation-delay:.35s}
@@ -204,6 +231,7 @@ textarea{resize:none;min-height:96px;line-height:1.5}
 .stats b{display:block;font:500 26px var(--serif)}
 
 @media (prefers-reduced-motion:reduce){
+  .floaters,.burst{display:none}.strip div{animation:none}
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
   .rings circle{stroke-dashoffset:0}
 }
@@ -226,6 +254,7 @@ var EVENT = {
   couple: "אוראל ואביתר", a: "אוראל", b: "אביתר",
   dateText: "יום רביעי, 14 באוקטובר 2026", venue: "אולם גבריאל, נס ציונה",
   deleteText: "28.10.2026",
+  photo: "",
   funnyQ: "מאיפה את/ה מכיר/ה את הזוג, ומה הסוד הכי מביך שלהם שאת/ה יודע/ת?"
 };
 /* ===================================================================== */
@@ -241,6 +270,7 @@ var store = {get:function(k){if(DEMO)return null;try{return localStorage.getItem
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function toast(msg){var t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("on")},2600)}
 
+var HEART="M12 21s-8.5-5.3-8.5-11.6A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8.5 2.8C20.5 15.7 12 21 12 21z";
 var ICON = {
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -312,17 +342,42 @@ window.addEventListener("hashchange",route);
 
 /* ---------------- intro ---------------- */
 function renderIntro(){
+  var ph=EVENT.photo&&EVENT.photo.indexOf("data:")===0;
   app.innerHTML=
-  '<section class="intro">'+rings("",true)+
+  '<section class="intro'+(ph?' has-photo':'')+'">'+floaters()+
+   (ph?'<div class="couple"><img src="'+EVENT.photo+'" alt="'+esc(EVENT.couple)+'"></div>':'')+rings("",true)+
    '<h1 class="names">'+esc(EVENT.a)+'<span>ו</span>'+esc(EVENT.b)+'</h1>'+
    '<p class="date">'+esc(EVENT.dateText)+'<br>'+esc(EVENT.venue)+'</p>'+
    '<div class="rule"></div>'+
+   '<div id="live"></div>'+
    '<p class="lead">רווקים ורווקות,<br>אולי זה הערב שלכם</p>'+
+   '<div class="strip" aria-hidden="true"><div>'+stripText()+stripText()+'</div></div>'+
    '<ol class="steps"><li>מצטרפים עם סלפי ועוד כמה פרטים</li><li>רואים מי עוד כאן ומסמנים לב</li><li>רק כשהלב הדדי, נחשפים פרטי הקשר</li></ol>'+
    (state.token
      ? '<a class="btn gold" href="#/g">לגלריה שלי</a>'
      : '<a class="btn gold" href="#/join">להצטרף</a><p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+
   '</section>';
+  loadLive();
+}
+function floaters(){
+  var h='',n=12,cols=["#C8323C","#B08A43","#E37B85"];
+  for(var i=0;i<n;i++){
+    var sz=10+Math.round(Math.random()*14);
+    h+='<i style="left:'+Math.round(Math.random()*96)+'%;--s:'+sz+'px;--d:'+(11+Math.random()*9).toFixed(1)+'s;--w:'+(-Math.random()*18).toFixed(1)+'s;--o:'+(.18+Math.random()*.25).toFixed(2)+';--r:'+Math.round(Math.random()*80-40)+'deg"><svg viewBox="0 0 24 24"><path fill="'+cols[i%3]+'" d="'+HEART+'"/></svg></i>';
+  }
+  return '<div class="floaters" aria-hidden="true">'+h+'</div>';
+}
+function stripText(){
+  var hs='<svg viewBox="0 0 24 24"><path fill="#C8323C" d="'+HEART+'"/></svg>';
+  return '<span>רווקים ורווקות '+hs+' סלפי אחד '+hs+' לב אחד '+hs+' אולי הריקוד הבא איתך '+hs+' '+esc(EVENT.couple)+' '+hs+'</span>';
+}
+function loadLive(){
+  if(!api) return;
+  api("public_stats",{}).then(function(st){
+    var el=$("#live"); if(!el||!st) return;
+    var n=st.singles||0, m=st.matches||0; if(n<3) return;
+    el.innerHTML='<span class="live"><span class="dot"></span>'+n+' רווקים ורווקות כבר בפנים'+(m?', '+m+' התאמות':'')+'</span>';
+  }).catch(function(){});
 }
 
 /* ---------------- join ---------------- */
@@ -455,7 +510,7 @@ function personalLink(){return location.origin+location.pathname+"#t="+state.tok
 function renderDone(){
   var link=personalLink();
   app.innerHTML='<section class="done center">'+rings("",true)+
-    '<h2>נרשמת!</h2><p class="sub">עכשיו רואים מי עוד כאן ומסמנים לב.</p>'+
+    '<h2>נרשמת!</h2><p class="sub">עכשיו רואים מי עוד כאן ומסמנים לב</p>'+
     '<div class="actions"><a class="btn gold" href="#/g">לראות מי כאן</a></div>'+
     '<div class="tokenbox"><b>הטלפון הזה זוכר אותך</b><p>רוצה להיכנס גם ממכשיר אחר? שלח לעצמך את הכניסה האישית בוואטסאפ.</p>'+
     '<div class="actions" style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לגלריה בחתונה של "+EVENT.couple+": "+link)+'">'+ICON.wa+'לשלוח לעצמי</a></div></div></section>';
@@ -483,6 +538,7 @@ $("#file").addEventListener("change",function(){
 
 /* ---------------- gallery ---------------- */
 function renderGallery(){
+  state.drawn=false;
   app.innerHTML='<div class="ghead"><div class="brand">'+esc(EVENT.couple)+'<small>נפגשים בחתונה</small></div>'+
     '<button class="me" data-act="mymenu" aria-label="הפרופיל שלי"><span class="skel" style="display:block;width:100%;height:100%"></span></button></div>'+
     '<div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="all" aria-selected="'+(state.tab==="all")+'">מי כאן<span class="badge hide" id="b_all"></span></button>'+
@@ -522,8 +578,9 @@ function drawPane(){
       pane.innerHTML='<div class="empty">'+rings()+'<b>עוד אין כאן אף אחד בשבילך</b>האורחים מצטרפים לאורך הערב. הדף מתעדכן לבד, תציצו שוב בעוד כמה דקות.</div>';
       return;
     }
-    pane.innerHTML='<div class="grid">'+state.list.map(function(p){
-      return '<button class="card'+(state.seen[p.id]?"":" new")+'" data-open="'+p.id+'" aria-label="'+esc(p.full_name)+', '+p.age+'">'+
+    var anim=!state.drawn; state.drawn=true;
+    pane.innerHTML='<div class="grid">'+state.list.map(function(p,i){
+      return '<button'+(anim?' style="animation-delay:'+Math.min(i*60,600)+'ms"':'')+' class="card'+(anim?" enter":"")+(state.seen[p.id]?"":" new")+'" data-open="'+p.id+'" aria-label="'+esc(p.full_name)+', '+p.age+'">'+
         pimg(p.id)+
         '<span class="cap"><b>'+esc(first(p.full_name))+', '+p.age+'</b><span>'+esc(p.city)+'</span></span>'+
         '<span class="hrt">'+(p.liked?ICON.heartFull:ICON.heart)+'</span></button>';
@@ -602,6 +659,7 @@ function like(id,btn){
     btn.disabled=false;
     btn.classList.toggle("liked",r.liked);
     btn.innerHTML=r.liked?ICON.heartFull+"סימנת לב":"לסמן לב";
+    if(r.liked){var sv=btn.querySelector("svg");if(sv)sv.classList.add("pop");var rc=btn.getBoundingClientRect();burst(rc.left+rc.width/2,rc.top+rc.height/2,8)}
     drawPane();
     if(r.match){
       closeSheet();
@@ -612,13 +670,25 @@ function like(id,btn){
     }else if(r.liked) toast("סימנת לב. אם זה הדדי, תדעו שניכם");
   }).catch(function(e){btn.disabled=false;handleErr(e)});
 }
+function burst(x,y,n){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for(var i=0;i<n;i++){
+    var b=document.createElement("span"),a=Math.random()*Math.PI*2,d=60+Math.random()*120;
+    b.className="burst";b.style.left=x+"px";b.style.top=y+"px";
+    b.style.setProperty("--x",Math.cos(a)*d+"px");b.style.setProperty("--y",(Math.sin(a)*d-40)+"px");b.style.setProperty("--r",Math.round(Math.random()*120-60)+"deg");
+    b.innerHTML='<svg viewBox="0 0 24 24"><path fill="'+(i%3?"#C8323C":"#B08A43")+'" d="'+HEART+'"/></svg>';
+    document.body.appendChild(b);setTimeout(function(e){e.remove()}.bind(null,b),950);
+  }
+}
 function showMatch(m){
   var d=document.createElement("div");d.className="match";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");
   d.innerHTML='<div class="duo"><div class="p a"><img src="'+(state.me&&state.me.photo||"")+'" alt=""></div><div class="p b"><img src="'+(state.photos[m.id]||"")+'" alt=""></div></div>'+
-    '<h2>יש התאמה</h2><p>גם '+esc(first(m.full_name))+' סימנ/ה לך לב. עכשיו אפשר לגשת, או לכתוב.</p>'+
+    '<h2>יש התאמה</h2><p>גם '+esc(first(m.full_name))+' סימנ/ה לך לב, עכשיו אפשר לגשת או לכתוב</p>'+
     '<div class="actions"><button class="btn gold" data-act="tomatches">לפרטי הקשר</button><button class="link" data-act="closematch">להמשיך להסתכל</button></div>';
   document.body.appendChild(d);
   requestAnimationFrame(function(){d.classList.add("on")});
+  setTimeout(function(){burst(innerWidth/2,innerHeight*0.32,22)},450);
+  setTimeout(function(){burst(innerWidth/2,innerHeight*0.32,14)},900);
   if(navigator.vibrate) try{navigator.vibrate([40,60,40])}catch(e){}
 }
 function closeMatch(){var d=$(".match"); if(d){d.classList.remove("on");setTimeout(function(){d.remove()},350)}}
@@ -759,6 +829,7 @@ var Mock=(function(){
     my_matches:function(a){var me=mee(a.p_token);return Object.keys(db.users).map(function(k){return db.users[k]}).filter(function(p){return vis(me,p)&&L(me.id,p.id)&&L(p.id,me.id)})
       .map(function(p){return{id:p.id,full_name:p.full_name,age:p.age,city:p.city,phone:p.phone,instagram:p.instagram}})},
     report_profile:function(){return null},
+    public_stats:function(){return{singles:Object.keys(db.users).length+17,matches:3}},
     get_my_profile:function(a){var u=mee(a.p_token);return{full_name:u.full_name,gender:u.gender,seeking:u.seeking,age:u.age,city:u.city,religiosity:u.religiosity,height:u.height,about:u.about,funny:u.funny,photo:photo(u),phone:u.phone,instagram:u.instagram,show_phone:!!u.phone,show_instagram:!!u.instagram}},
     update_me:function(a){var u=mee(a.p_token);u.full_name=a.p_full_name;u.gender=a.p_gender;u.seeking=a.p_seeking;u.age=a.p_age;u.city=a.p_city;u.religiosity=a.p_religiosity;u.height=a.p_height;u.about=a.p_about;u.funny=a.p_funny;u.photo=a.p_photo;u.phone=a.p_show_phone?a.p_phone:null;u.instagram=a.p_show_instagram?a.p_instagram:null;return null},
     delete_me:function(a){delete db.users[a.p_token];return null},
