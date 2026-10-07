@@ -121,6 +121,11 @@ img{display:block;max-width:100%}
 .steps li:last-child{border:0}
 .steps li::before{content:counter(s);font:600 20px/1 var(--serif);color:var(--gold);min-width:16px}
 .intro .back{margin-top:14px;font-size:15px;color:var(--muted)}
+.intro{padding-bottom:110px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:22px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--paper) 62%,rgba(247,243,236,0))}
+.dock .btn{max-width:480px;margin:0 auto}
+.ighelp{margin-top:10px;padding:12px 14px;border-radius:14px;background:rgba(31,28,25,.05);font-size:15px;line-height:1.6;font-weight:500;color:var(--ink);text-align:right}
+.ighelp ol{margin:6px 0 0;padding:0 20px 0 0}.ighelp li{margin:2px 0}.ighelp p{margin:8px 0 0;color:var(--muted)}
 
 /* form */
 .top{display:flex;align-items:center;gap:12px;padding:18px 0 8px;position:sticky;top:0;background:rgba(247,243,236,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5}
@@ -366,6 +371,7 @@ grabToken();
 function go(r){ if(location.hash!=="#/"+r) location.hash="/"+r; else route(); }
 function route(){
   grabToken(); stopPoll(); closeSheet(true);
+  [].forEach.call(document.querySelectorAll(".dock"),function(d){d.remove()});
   var r=location.hash.replace(/^#\/?/,"");
   window.scrollTo(0,0);
   if(r==="admin") return renderAdmin();
@@ -393,10 +399,11 @@ function renderIntro(){
    '<p class="quote">״עַד שֶׁמָּצָאתִי אֵת שֶׁאָהֲבָה נַפְשִׁי״<small>שיר השירים</small></p>'+
    '<div class="strip" aria-hidden="true"><div>'+stripText()+stripText()+'</div></div>'+
    '<ol class="steps"><li>מצטרפים עם סלפי ועוד כמה פרטים</li><li>רואים מי עוד כאן ומסמנים לב</li><li>רק כשהלב הדדי, נחשפים פרטי הקשר</li></ol>'+
-   (state.token
-     ? '<a class="btn gold" href="#/g">לגלריה שלי</a>'
-     : '<a class="btn gold" href="#/join">להצטרף</a><p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+
+   (state.token?'':'<p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+
   '</section>';
+  var dk=document.createElement("div"); dk.className="dock";
+  dk.innerHTML=state.token?'<a class="btn gold" href="#/g">לראות מי כאן</a>':'<a class="btn gold" href="#/join">להצטרף</a>';
+  document.body.appendChild(dk);
   loadLive();
 }
 function floaters(){
@@ -459,8 +466,8 @@ function renderJoin(){
         '<div class="contact'+(F.useIg?" on":"")+'"><div class="head"><span>אינסטגרם</span><button type="button" class="switch" role="switch" aria-label="אינסטגרם" aria-checked="'+F.useIg+'" data-act="useIg"></button></div>'+
           (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="@username" dir="ltr" value="'+esc(F.instagram)+'">'+
             '<small id="ig_ok" dir="ltr" style="color:var(--ok);font-weight:700;text-align:right">'+(normIg(F.instagram)?"✓ @"+esc(normIg(F.instagram)):"")+'</small>'+
-            '<small>הכי קל: באינסטגרם, בפרופיל שלך, לוחצים על שיתוף הפרופיל ואז <b>Copy link</b>. חוזרים לכאן, לחיצה ארוכה בתיבה ו<b>הדבקה</b>. אפשר גם להקליד את שם המשתמש שמופיע עם @, לא את השם המלא.</small>'+
-            '<small>גם חשבון פרטי עובד: מי שתתאימו איתו יוכל לשלוח לך בקשת מעקב.</small><div class="err" id="e_ig"></div></div>':'')+'</div>'+
+            '<div class="ighelp"><b>הכי קל להדביק קישור:</b><ol><li>באינסטגרם, נכנסים לפרופיל שלך</li><li>לוחצים על <b>שיתוף הפרופיל</b> ואז <b dir="ltr">Copy link</b></li><li>חוזרים לכאן ומדביקים בתיבה</li></ol><p>חשבון פרטי? גם זה בסדר.</p></div>'+
+            '<div class="err" id="e_ig"></div></div>':'')+'</div>'+
         '<div class="err" id="e_contact"></div></div>'+
       (F.edit?'':'<label class="consent"><input type="checkbox" id="f_consent"'+(F.consent?" checked":"")+'><span>אני מעל גיל 18, ומסכים/ה שהתמונה והפרטים יוצגו לרווקים ולרווקות שנרשמו לאתר. פרטי הקשר נחשפים רק בהתאמה הדדית, והכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'.</span></label>')+
       '<div class="err" id="e_consent"></div>';
