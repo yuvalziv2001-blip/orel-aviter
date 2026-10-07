@@ -361,7 +361,7 @@ function renderJoin(){
         '<div class="contact'+(F.usePhone?" on":"")+'"><div class="head"><span>וואטסאפ</span><button type="button" class="switch" role="switch" aria-label="וואטסאפ" aria-checked="'+F.usePhone+'" data-act="usePhone"></button></div>'+
           (F.usePhone?'<div class="body"><input id="f_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 000 0000" dir="ltr" value="'+esc(F.phone)+'"><div class="err" id="e_phone"></div></div>':'')+'</div>'+
         '<div class="contact'+(F.useIg?" on":"")+'"><div class="head"><span>אינסטגרם</span><button type="button" class="switch" role="switch" aria-label="אינסטגרם" aria-checked="'+F.useIg+'" data-act="useIg"></button></div>'+
-          (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="שם משתמש" dir="ltr" value="'+esc(F.instagram)+'"><div class="err" id="e_ig"></div></div>':'')+'</div>'+
+          (F.useIg?'<div class="body"><input id="f_ig" type="text" autocapitalize="off" autocorrect="off" placeholder="שם משתמש או קישור לפרופיל" dir="ltr" value="'+esc(F.instagram)+'"><small>גם חשבון פרטי עובד: מי שתתאימו איתו יוכל לשלוח לך בקשת מעקב או הודעה.</small><div class="err" id="e_ig"></div></div>':'')+'</div>'+
         '<div class="err" id="e_contact"></div></div>'+
       '<label class="consent"><input type="checkbox" id="f_consent"'+(F.consent?" checked":"")+'><span>אני מעל גיל 18, ומסכים/ה שהתמונה והפרטים יוצגו לרווקים ולרווקות שנרשמו לאתר. פרטי הקשר נחשפים רק בהתאמה הדדית, והכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'.</span></label>'+
       '<div class="err" id="e_consent"></div>';
@@ -387,6 +387,12 @@ function normPhone(p){
   if(d.charAt(0)==="0") d=d.slice(1);
   return /^5\d{8}$/.test(d)?"972"+d:null;
 }
+function normIg(v){
+  v=String(v||"").trim();
+  var m=v.match(/instagram\.com\/([A-Za-z0-9._]{1,30})/i); if(m) v=m[1];
+  v=v.replace(/^@/,"").replace(/\/+$/,"");
+  return /^[A-Za-z0-9._]{1,30}$/.test(v)?v:null;
+}
 function validate(){
   var bad=false;
   if(F.step===1){
@@ -403,7 +409,7 @@ function validate(){
   }else{
     if(!F.usePhone&&!F.useIg) bad=setErr("e_contact","צריך לפחות דרך אחת שיוכלו לפנות אליך")||bad;
     if(F.usePhone&&!normPhone(F.phone)) bad=setErr("e_phone","מספר נייד ישראלי, למשל 050 123 4567")||bad;
-    if(F.useIg&&!/^@?[A-Za-z0-9._]{1,30}$/.test(F.instagram.trim())) bad=setErr("e_ig","שם המשתמש באנגלית, בלי רווחים")||bad;
+    if(F.useIg&&!normIg(F.instagram)) bad=setErr("e_ig","שם המשתמש או הקישור לפרופיל")||bad;
     if(!F.consent) bad=setErr("e_consent","צריך לאשר כדי להצטרף")||bad;
   }
   if(bad){var first=document.querySelector(".err:not(:empty)"); if(first) first.scrollIntoView({block:"center",behavior:"smooth"});}
@@ -417,7 +423,7 @@ function nextStep(){
     p_full_name:F.full_name.trim(),p_gender:F.gender,p_seeking:F.seeking,p_age:parseInt(F.age,10),
     p_city:F.city.trim(),p_religiosity:F.religiosity,p_height:F.height===""?null:parseInt(F.height,10),
     p_about:F.about.trim(),p_funny:F.funny.trim(),p_photo:F.photo,
-    p_phone:F.usePhone?normPhone(F.phone):null,p_instagram:F.useIg?F.instagram.trim().replace(/^@/,""):null,
+    p_phone:F.usePhone?normPhone(F.phone):null,p_instagram:F.useIg?normIg(F.instagram):null,
     p_show_phone:!!F.usePhone,p_show_instagram:!!F.useIg
   }).then(function(token){
     state.token=token;store.set("mw_token",token);F=null;renderDone();
