@@ -363,7 +363,7 @@ function handleErr(e){
 }
 
 /* ---------------- state + routing ---------------- */
-var state={token:store.get("mw_token"),me:null,list:[],matches:[],photos:{},seen:{},tab:"all",timer:null,adminPass:null};
+var state={token:store.get("mw_token"),me:null,list:[],matches:[],photos:{},seen:{},tab:"all",timer:null,adminPass:store.get("mw_admin")};
 function grabToken(){
   var m=location.hash.match(/[#&]t=([a-f0-9]{40,80})/);
   if(m){state.token=m[1];store.set("mw_token",m[1]);state.me=null;state.skip=null;state.sig=null;history.replaceState(null,"",location.pathname+location.search+"#/g")}
@@ -866,8 +866,9 @@ function renderAdmin(){
 }
 function loadAdmin(){
   api("admin_list",{p_pass:state.adminPass}).then(function(d){
+    store.set("mw_admin",state.adminPass);
     var ps=d.profiles, live=ps.filter(function(p){return !p.hidden}).length;
-    app.innerHTML='<div class="ghead"><div class="brand">ניהול<small>'+esc(EVENT.couple)+'</small></div><button class="sbtn" data-act="adminreload">רענון</button></div>'+
+    app.innerHTML='<div class="ghead"><div class="brand">ניהול<small>'+esc(EVENT.couple)+'</small></div><div style="display:flex;gap:8px"><button class="sbtn" data-act="adminreload">רענון</button><button class="sbtn" data-act="adminout">יציאה</button></div></div>'+
       '<div class="stats"><div><b>'+live+'</b>פעילים</div><div><b>'+d.likes+'</b>לבבות</div><div><b>'+d.matches+'</b>התאמות</div></div>'+
       (ps.length?'':'<div class="empty">עוד אין נרשמים</div>')+
       ps.map(function(p){
@@ -878,7 +879,7 @@ function loadAdmin(){
           '<button class="sbtn red" data-del="'+p.id+'">למחוק</button></div></div>';
       }).join("");
   }).catch(function(e){
-    if(/bad_password/.test(e.message||"")){state.adminPass=null;toast("סיסמה שגויה");renderAdmin()} else handleErr(e);
+    if(/bad_password/.test(e.message||"")){state.adminPass=null;store.del("mw_admin");toast("סיסמה שגויה");renderAdmin()} else handleErr(e);
   });
 }
 
@@ -945,6 +946,7 @@ document.addEventListener("click",function(e){
       api("delete_me",{p_token:state.token}).then(function(){store.del(skipKey());store.del("mw_token");state.token=null;state.me=null;state.photos={};state.list=[];state.matches=[];state.sig=null;state.skip=null;state.topId=null;toast("הפרופיל נמחק");go("")}).catch(handleErr);
       break;
     case "adminreload": loadAdmin(); break;
+    case "adminout": store.del("mw_admin"); state.adminPass=null; renderAdmin(); break;
   }
 });
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeSheet();closeMatch()}});
