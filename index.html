@@ -121,9 +121,10 @@ img{display:block;max-width:100%}
 .steps li:last-child{border:0}
 .steps li::before{content:counter(s);font:600 20px/1 var(--serif);color:var(--gold);min-width:16px}
 .intro .back{margin-top:14px;font-size:15px;color:var(--muted)}
-.intro{padding-bottom:110px}
+.intro{padding-bottom:40px}.endcta{margin-top:8px}
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:22px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--paper) 62%,rgba(247,243,236,0))}
 .dock .btn{max-width:480px;margin:0 auto}
+.dock{transition:opacity .25s,transform .25s}.dock.off{opacity:0;transform:translateY(24px);pointer-events:none}
 .ighelp{margin-top:10px;padding:12px 14px;border-radius:14px;background:rgba(31,28,25,.05);font-size:15px;line-height:1.6;font-weight:500;color:var(--ink);text-align:right}
 .ighelp ol{margin:6px 0 0;padding:0 20px 0 0}.ighelp li{margin:2px 0}.ighelp p{margin:8px 0 0;color:var(--muted)}
 
@@ -399,11 +400,13 @@ function renderIntro(){
    '<p class="quote">״עַד שֶׁמָּצָאתִי אֵת שֶׁאָהֲבָה נַפְשִׁי״<small>שיר השירים</small></p>'+
    '<div class="strip" aria-hidden="true"><div>'+stripText()+stripText()+'</div></div>'+
    '<ol class="steps"><li>מצטרפים עם סלפי ועוד כמה פרטים</li><li>רואים מי עוד כאן ומסמנים לב</li><li>רק כשהלב הדדי, נחשפים פרטי הקשר</li></ol>'+
-   (state.token?'':'<p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+
+   '<div class="endcta">'+(state.token?'<a class="btn gold" href="#/g">לראות מי כאן</a>':'<a class="btn gold" href="#/join">להצטרף</a><p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+'</div>'+
   '</section>';
   var dk=document.createElement("div"); dk.className="dock";
   dk.innerHTML=state.token?'<a class="btn gold" href="#/g">לראות מי כאן</a>':'<a class="btn gold" href="#/join">להצטרף</a>';
   document.body.appendChild(dk);
+  var ec=$(".endcta");
+  if(ec&&window.IntersectionObserver) new IntersectionObserver(function(es){ dk.classList.toggle("off",es[0].isIntersecting) }).observe(ec);
   loadLive();
 }
 function floaters(){
