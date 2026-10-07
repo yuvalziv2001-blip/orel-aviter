@@ -287,7 +287,7 @@ function errText(e){
 function handleErr(e){
   var t=errText(e);
   if(t==="expired"){ store.del("mw_token"); renderClosed(); return; }
-  if(t==="bad_token"){ store.del("mw_token"); state.token=null; toast("הקישור האישי לא נמצא, אפשר להירשם מחדש"); go(""); return; }
+  if(t==="bad_token"){ store.del("mw_token"); state.token=null; toast("הכניסה האישית לא נמצאה, אפשר להירשם מחדש"); go(""); return; }
   toast(t);
 }
 
@@ -320,7 +320,7 @@ function renderIntro(){
    '<ol class="steps"><li>מצטרפים עם סלפי ועוד כמה פרטים</li><li>רואים מי עוד כאן ומסמנים לב</li><li>רק כשהלב הדדי, נחשפים פרטי הקשר</li></ol>'+
    (state.token
      ? '<a class="btn gold" href="#/g">לגלריה שלי</a>'
-     : '<a class="btn gold" href="#/join">להצטרף</a><p class="back">כבר נרשמת? הקישור האישי שקיבלת מחזיר אותך פנימה</p>')+
+     : '<a class="btn gold" href="#/join">להצטרף</a><p class="back">נרשמת מטלפון אחר? פתח את הכניסה האישית ששלחת לעצמך</p>')+
   '</section>';
 }
 
@@ -427,11 +427,10 @@ function personalLink(){return location.origin+location.pathname+"#t="+state.tok
 function renderDone(){
   var link=personalLink();
   app.innerHTML='<section class="done center">'+rings("",true)+
-    '<h2>נרשמת, ברוכים הבאים</h2><p class="sub">עכשיו אפשר להתחיל לסמן לבבות.</p>'+
-    '<div class="tokenbox"><b>הקישור האישי שלך</b><p>הוא מחזיר אותך לגלריה ולהתאמות שלך מכל מכשיר. כדאי לשמור אותו, ולא לשתף אותו עם אחרים.</p><code>'+esc(link)+'</code></div>'+
-    '<div class="actions"><a class="btn gold" href="#/g">לגלריה</a>'+
-    '<a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הקישור האישי שלי לגלריה בחתונה של "+EVENT.couple+": "+link)+'">'+ICON.wa+'לשלוח לעצמי בוואטסאפ</a>'+
-    '<button class="link" data-act="copy">להעתיק את הקישור</button></div></section>';
+    '<h2>נרשמת!</h2><p class="sub">עכשיו רואים מי עוד כאן ומסמנים לב.</p>'+
+    '<div class="actions"><a class="btn gold" href="#/g">לראות מי כאן</a></div>'+
+    '<div class="tokenbox"><b>הטלפון הזה זוכר אותך</b><p>רוצה להיכנס גם ממכשיר אחר? שלח לעצמך את הכניסה האישית בוואטסאפ.</p>'+
+    '<div class="actions" style="margin-top:12px"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לגלריה בחתונה של "+EVENT.couple+": "+link)+'">'+ICON.wa+'לשלוח לעצמי</a></div></div></section>';
 }
 
 /* ---------- selfie: crop to 4:5 and compress ---------- */
@@ -461,7 +460,7 @@ function renderGallery(){
     '<div class="tabs" role="tablist"><button class="tab" role="tab" data-tab="all" aria-selected="'+(state.tab==="all")+'">מי כאן<span class="badge hide" id="b_all"></span></button>'+
     '<button class="tab" role="tab" data-tab="matches" aria-selected="'+(state.tab==="matches")+'">התאמות<span class="badge hide" id="b_m"></span></button></div>'+
     '<div id="pane"><div class="grid">'+[1,2,3,4].map(function(){return '<div class="card skel"></div>'}).join("")+'</div></div>'+
-    '<div class="gfoot"><button class="link" data-act="mylink">הקישור האישי שלי</button><button class="link" data-act="deleteme">למחוק את הפרופיל שלי</button></div>'+
+    '<div class="gfoot"><button class="link" data-act="mylink">כניסה ממכשיר אחר</button><button class="link" data-act="deleteme">למחוק את הפרופיל שלי</button></div>'+
     '<p class="note">הכל נמחק אוטומטית ב '+esc(EVENT.deleteText)+'</p>';
   refresh(true);
   startPoll();
@@ -674,8 +673,8 @@ document.addEventListener("click",function(e){
     case "tomatches": closeMatch(); state.tab="matches"; history.replaceState(null,"","#/m");
       document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-tab")==="matches")}); drawPane(); break;
     case "mymenu": case "mylink":
-      openSheet('<div class="in center"><h3 style="font-size:26px">הקישור האישי שלך</h3><p class="sub" style="margin-top:8px">הוא מחזיר אותך לגלריה ולהתאמות שלך מכל מכשיר. לא לשתף עם אחרים.</p>'+
-        '<div class="actions"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הקישור האישי שלי לגלריה בחתונה של "+EVENT.couple+": "+personalLink())+'">'+ICON.wa+'לשלוח לעצמי בוואטסאפ</a>'+
+      openSheet('<div class="in center"><h3 style="font-size:26px">כניסה ממכשיר אחר</h3><p class="sub" style="margin-top:8px">הטלפון הזה כבר זוכר אותך. כדי להיכנס גם ממכשיר אחר, שלח לעצמך את הכניסה האישית. לא לשתף עם אחרים.</p>'+
+        '<div class="actions"><a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/?text='+encodeURIComponent("הכניסה האישית שלי לגלריה בחתונה של "+EVENT.couple+": "+personalLink())+'">'+ICON.wa+'לשלוח לעצמי בוואטסאפ</a>'+
         '<button class="btn ghost" data-act="copy">להעתיק את הקישור</button><button class="link" data-act="closesheet">סגירה</button></div></div>');
       break;
     case "deleteme":
